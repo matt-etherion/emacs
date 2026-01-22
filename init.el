@@ -4,7 +4,7 @@
 (scroll-bar-mode 0)
 (show-paren-mode 1)
 (setq line-number-display-limit nil)
-(global-display-line-numbers-mode 1)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
 (setq custom-file (locate-user-emacs-file "custom.el"))
@@ -26,7 +26,8 @@
 (setq scroll-margin 3
   scroll-conservatively 101)
 
-(set-frame-font "Iosevka Nerd Font Mono 24" nil t)
+(when (member "Iosevka Nerd Font Mono" (font-family-list))
+  (set-frame-font "Iosevka Nerd Font Mono 24" nil t))
 (set-language-environment "UTF-8")
 
 ;; Package system
@@ -61,10 +62,11 @@
 (setq completion-styles '(orderless basic))
 
 (setq whitespace-style '(face spaces tabs space-mark tabs tab-mark))
-(global-whitespace-mode 1)
+(add-hook 'prog-mode-hook #'whitespace-mode)
 
 ;; Utilities
 (ensure 'multiple-cursors)
+(ensure 'magit)
 
 ;; Custom Functions
 (defun my/dired()
@@ -72,7 +74,7 @@
   (interactive)
   (dired default-directory))
 (setq dired-listing-switches "-alh --group-directories-first")
-(setq dired-kill-whel-opening-new-dired-buffer t)
+(setq dired-kill-when-opening-new-dired-buffer t)
 (put 'dired-find-alternative-file 'disabled nil)
 (defun my/exec-in-term ()
   "Run the current executable in a bottom split using term-mode."
@@ -86,6 +88,14 @@
       (set-window-buffer win buf)
       (with-selected-window win
         (term file)))))
+(defun my/kill-function ()
+  "Kill all buffers except the current one."
+  (interactive)
+  (mapc (lambda (buf)
+          (unless (eq buf (current-buffer))
+            (kill-buffer buf)))
+        (buffer-list)))
+
 
 ;; Keybinds
 (global-set-key (kbd "C-c d") #'my/dired)
@@ -101,5 +111,6 @@
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c a") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-c k") #'my/kill-function)
 
 (provide 'init)

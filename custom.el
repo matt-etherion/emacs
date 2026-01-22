@@ -7,7 +7,9 @@
  '(custom-safe-themes
    '("01a9797244146bbae39b18ef37e6f2ca5bebded90d9fe3a2f342a9e863aaa4fd"
      default))
- '(package-selected-packages nil))
+ '(package-selected-packages
+   '(consult gruber-darker-theme magit marginalia move-text
+             multiple-cursors orderless vertico vterm)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
